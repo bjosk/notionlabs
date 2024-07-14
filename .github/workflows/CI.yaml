@@ -1,0 +1,55 @@
+name: Continuous-Integration
+# Triggers the workflow on every pull request to the main branch
+on: 
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      -main
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Publish package
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+#name: Continuous-Integration
+# Triggers the workflow on every pull request to the main branch
+#on: 
+#  pull_request:
+#    branches:
+#      - main
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+      # Checkout the repository code
+#      - uses: actions/checkout@v4
+      # Set up Java JDK on the runner
+#      - uses: actions/java-setup@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: '11'
+      # Compile and run tests
+#      - name: Run Maven verify
+#        run: mvn --batch-mode --update-snapshots verify
+      # Package the application into a JAR file and deploy to GitHub packages if the test are successful.
+      # This step is not complete and does not present a full implementation for deploying the JAR file
+      # to GitHub Packages.
+      # This is purely for demonstration purposes.
+#      -name: Package into JAR
+#        if: success()
+#        run: mvn --batch-mode deploy # To GitHub Packages
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
