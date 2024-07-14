@@ -2,8 +2,8 @@ name: Continuous-Integration
 # Triggers the workflow on every pull request to the main branch
 on: 
   pull_request_target:
-  types:
-    - opened
+    types:
+      - opened
     branches:
       - master
   push:
