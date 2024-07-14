@@ -19,22 +19,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Set up Maven settings
-        run: |
-          mkdir -p ~/.m2
-          echo "<settings>
-                  <servers>
-                    <server>
-                      <id>github</id>
-                      <username>${{ secrets.GITHUB_ACTOR }}</username>
-                      <password>${{ secrets.GITHUB_TOKEN }}</password>
-                    </server>
-                  </servers>
-                </settings>" > ~/.m2/settings.xml
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.JAVA_TOKEN }}
         
 #name: Continuous-Integration
 # Triggers the workflow on every pull request to the main branch
