@@ -21,6 +21,7 @@ jobs:
           fail_on_error: true
   publish:
     runs-on: ubuntu-latest
+    needs: checkstyle
     permissions:
       contents: write
       packages: write
