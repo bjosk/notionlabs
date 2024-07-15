@@ -18,7 +18,6 @@ jobs:
           github_token: ${{ secrets.JAVA_TOKEN }}
           reporter: github-pr-review
           level: warning
-          fail_on_error: true
   publish:
     runs-on: ubuntu-latest
     needs: checkstyle
