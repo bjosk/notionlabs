@@ -8,6 +8,16 @@ on:
     branches:
       -master
 jobs:
+  checkstyle:
+    name: runner / checkstyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dbelyaev/action-checkstyle@master
+        with:
+          github_token: ${{ secrets.JAVA_TOKEN }}
+          reporter: github-pr-review
+          level: warning
   publish:
     runs-on: ubuntu-latest
     permissions:
@@ -23,33 +33,3 @@ jobs:
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.JAVA_TOKEN }}
-        
-#name: Continuous-Integration
-# Triggers the workflow on every pull request to the main branch
-#on: 
-#  pull_request:
-#    branches:
-#      - main
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-      # Checkout the repository code
-#      - uses: actions/checkout@v4
-      # Set up Java JDK on the runner
-#      - uses: actions/java-setup@v4
-#        with:
-#          distribution: 'temurin'
-#          java-version: '11'
-      # Compile and run tests
-#      - name: Run Maven verify
-#        run: mvn --batch-mode --update-snapshots verify
-      # Package the application into a JAR file and deploy to GitHub packages if the test are successful.
-      # This step is not complete and does not present a full implementation for deploying the JAR file
-      # to GitHub Packages.
-      # This is purely for demonstration purposes.
-#      -name: Package into JAR
-#        if: success()
-#        run: mvn --batch-mode deploy # To GitHub Packages
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
