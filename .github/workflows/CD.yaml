@@ -43,6 +43,6 @@ jobs:
           username: ${{ secrets.PRODUCTION_USERNAME }}
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
           script: |
-            systemctl stop my-java-app || true
+            systemctl stop notionlabs || true
             mv /path/to/deployment/directory/notionlabs.jar /path/to/application/directory/notionlabs.jar
-            systemctl start my-java-app
+            systemctl start notionlabs
