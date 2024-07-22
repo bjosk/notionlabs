@@ -1,0 +1,48 @@
+name: Deploy to Production
+
+on:
+  workflow_run:
+    workflows: ["Continuous-Integration"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Download the latest JAR from GitHub Packages
+        run: mvn dependency:get -Dartifact=com.notionlabs:java-maven:1.0-SNAPSHOT -DremoteRepositories=github::default::https://maven.pkg.github.com/bjosk/notionlabs
+
+      - name: Copy JAR to deployment directory
+        run: cp ~/.m2/repository/com/notionlabs/java-maven/1.0-SNAPSHOT/java-maven-1.0-SNAPSHOT.jar ./notionlabs.jar
+
+      - name: Transfer JAR to Production Server
+        uses: nicklasfrahm/scp-action@main
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER }}
+          username: ${{ secrets.PRODUCTION_USERNAME }}
+          port: ${{ secrets.PRODUCTION_PORT }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          source: ./notionlabs.jar
+          target: /path/to/deployment/directory/
+
+      - name: Deploy to Production
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER }}
+          username: ${{ secrets.PRODUCTION_USERNAME }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            systemctl stop my-java-app || true
+            mv /path/to/deployment/directory/notionlabs.jar /path/to/application/directory/notionlabs.jar
+            systemctl start my-java-app
